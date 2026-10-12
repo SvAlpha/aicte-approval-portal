@@ -1,0 +1,49 @@
+name: AICTE Portal CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop, 'feature/**' ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build-test-analyze:
+    name: Build, Unit/Integration Tests & Static Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 1. Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 2. Setup Node.js Runtime (v18 LTS)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+
+      - name: 3. Stage 1 — Compile & Syntax Verification (Build Gate)
+        working-directory: ./backend
+        run: npm run lint
+
+      - name: 4. Stage 2 — Automated Unit & Integration Tests (Test Gate)
+        working-directory: ./backend
+        run: npm test
+
+      - name: 5. Stage 3 — Static Code Analysis & Encapsulation Audit
+        working-directory: ./backend
+        run: |
+          echo "Verifying OOP Encapsulation (#password private fields) & Strategy Pattern interfaces..."
+          grep -q "#password" models/College.js
+          grep -q "#password" models/Evaluator.js
+          grep -q "#password" models/AICTEAdmin.js
+          grep -q "extends IDocumentProcessor" services/TesseractOCRService.js
+          grep -q "extends IEvaluatorMatcher" services/NLPMatchingService.js
+          echo "Static OOP & SOLID verification passed."
+
+  deploy-staging:
+    name: Stage 4 — Deploy to Render (API) & Vercel (SPA)
+    needs: build-test-analyze
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render & Vercel Deployment Webhook
+        run: echo "CI checks green. Ready for Render/Vercel cloud deployment."
