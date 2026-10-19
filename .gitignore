@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Environment secrets
+.env
+.env.*
+!.env.example
+
+# Build output
+dist/
+build/
+coverage/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Local databases and uploaded files (adjust to your project)
+*.sqlite
+*.sqlite3
+*.db
+uploads/
