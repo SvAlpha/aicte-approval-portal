@@ -1,0 +1,24 @@
+{
+  "name": "aicte-approval-portal-backend",
+  "version": "1.0.0",
+  "description": "AI-Supported AICTE Approval Process Portal Backend (Node.js + Express + PostgreSQL + Tesseract OCR + NLP Matcher)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test tests/unit.test.js tests/integration.test.js",
+    "lint": "node --check server.js && node --check controllers/ApplicationController.js && node --check controllers/AuthController.js"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "pg": "^8.12.0",
+    "tesseract.js": "^5.1.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0"
+  }
+}
