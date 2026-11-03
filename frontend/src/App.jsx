@@ -778,6 +778,7 @@ export default function App() {
   const [authNotice, setAuthNotice] = useState(null);
   const [authError, setAuthError] = useState(null);
   const [showDemoSwitcher, setShowDemoSwitcher] = useState(false);
+  const [loginPersona, setLoginPersona] = useState('College');
 
   // UI Feedback & Confirmation Modals
   const [toast, setToast] = useState(null);
@@ -982,7 +983,7 @@ export default function App() {
         `Authenticated College session for ${matchedCollege.college_name} (${matchedCollege.email}).`
       );
       setLoginPassword('');
-      triggerToast('Signed In as Institution', `Welcome, ${matchedCollege.college_name}.`);
+      triggerToast('Signed In as College', `Welcome, ${matchedCollege.college_name}.`);
       return;
     }
 
@@ -3667,7 +3668,7 @@ export default function App() {
               </div>
             </div>
 
-            <div className="bg-white rounded-lg border border-slate-200 p-5 shadow-sm space-y-3">
+            <div className="bg-white rounded-lg border border-slate-200 p-5 shadow-sm space-y-3 test-accounts-section">
               <h4 className="text-sm font-semibold text-slate-900">
                 Application Distribution by Workflow Status
               </h4>
@@ -3739,39 +3740,85 @@ export default function App() {
     setAuthNotice(`Loaded test credentials for ${email}. Click "Authenticate & Issue Signed JWT" to sign in.`);
   };
 
+  const loginPersonaConfig = {
+    College: {
+      label: 'College',
+      shortLabel: 'College',
+      accent: '#1e3a8a',
+      surface: '#faf8f5',
+      icon: Building2,
+      eyebrow: 'Institutional submission desk',
+      title: 'Build a complete statutory dossier.',
+      description: 'Submit programs, keep every document legible, and resolve reviewer queries without losing the audit trail.',
+      bullets: ['5 mandatory documents', 'OCR-assisted completeness checks', 'Public registration available'],
+      quickEmail: 'admin@sviit.edu',
+      quickPassword: 'College@123'
+    },
+    Evaluator: {
+      label: 'Evaluator',
+      shortLabel: 'Evaluator',
+      accent: '#0f766e',
+      surface: '#f4fbf9',
+      icon: UserCheck,
+      eyebrow: 'Technical committee workbench',
+      title: 'Review evidence with a clear human record.',
+      description: 'Inspect source scans, use AI extraction as advisory support, and submit an accountable recommendation.',
+      bullets: ['OCR inspection workflow', 'Confidential, anonymous queries', 'Admin verification required'],
+      quickEmail: 'r.sharma@iitb.ac.in',
+      quickPassword: 'Evaluator@123'
+    },
+    AICTEAdmin: {
+      label: 'AICTE Admin',
+      shortLabel: 'AICTE Admin',
+      accent: '#312e81',
+      surface: '#f5f6fa',
+      icon: Shield,
+      eyebrow: 'Approval bureau command',
+      title: 'Govern the decision, not just the queue.',
+      description: 'Match evaluators, verify the registry, and bind final decisions with a complete institutional audit trail.',
+      bullets: ['65 / 35 suitability matching', 'Evaluator governance', 'Two-stage decision separation'],
+      quickEmail: 'admin@aicte-india.org',
+      quickPassword: 'Admin@123'
+    }
+  };
+
+  const activeLoginPersona = loginPersonaConfig[loginPersona];
+
   const renderAuthScreen = () => (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start py-2">
+    <div className="auth-shell" style={{ '--persona-accent': activeLoginPersona.accent, '--persona-surface': activeLoginPersona.surface }}>
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start py-2 auth-legacy-content">
       {/* Left Column: Institutional Portal Overview & Safe Evaluation Test Accounts */}
       <div className="lg:col-span-7 space-y-5">
         <div className="bg-white rounded-lg border border-slate-200 p-6 shadow-sm space-y-4">
-          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-slate-100 text-slate-700 text-xs font-medium border border-slate-200">
-            <Shield className="w-3.5 h-3.5 text-blue-800" />
-            <span>AICTE Institutional Accreditation &amp; Approval Workflow</span>
+          <div className="auth-briefing auth-hero-briefing">
+            <div className="crest"><activeLoginPersona.icon size={22} /></div>
+            <span className="eyebrow">{activeLoginPersona.eyebrow}</span>
+            <h2>{activeLoginPersona.title}</h2>
+            <p>{activeLoginPersona.description}</p>
+            <div className="briefing-list">
+              {activeLoginPersona.bullets.map((bullet) => <span key={bullet}><CheckCircle2 size={15} />{bullet}</span>)}
+            </div>
           </div>
-          <h2 className="text-xl font-semibold text-slate-900">
-            AI-Supported AICTE Approval Process Portal
-          </h2>
-          <p className="text-sm text-slate-600 leading-relaxed">
-            A role-based regulatory workflow system for technical institutions, subject-matter evaluators, and AICTE administrators. Integrates Tesseract OCR document field extraction and NLP-based evaluator suitability scoring while preserving human decision authority at every stage.
-          </p>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+          <div className="how-it-works-grid">
             <div className="p-3.5 rounded-lg bg-slate-50 border border-slate-200">
-              <div className="text-xs font-semibold text-slate-900">1. Institution Workspace</div>
-              <p className="text-xs text-slate-600 mt-1">
-                Submit applications, upload 5 statutory documents, track real-time status, and respond to clarification requests.
+              <Building2 className="text-blue-800 mb-2" size={22} />
+              <div className="text-base font-semibold text-slate-900">Institution workspace</div>
+              <p className="text-base text-slate-600 mt-1">
+                Submit applications and respond to statutory document clarifications.
               </p>
             </div>
             <div className="p-3.5 rounded-lg bg-slate-50 border border-slate-200">
-              <div className="text-xs font-semibold text-slate-900">2. Evaluator Workspace</div>
-              <p className="text-xs text-slate-600 mt-1">
-                Inspect assigned applications, compare OCR findings against source scans, request clarifications, and submit recommendations.
+              <UserCheck className="text-blue-800 mb-2" size={22} />
+              <div className="text-base font-semibold text-slate-900">Evaluator workspace</div>
+              <p className="text-base text-slate-600 mt-1">
+                Inspect evidence and submit a transparent technical recommendation.
               </p>
             </div>
             <div className="p-3.5 rounded-lg bg-slate-50 border border-slate-200">
-              <div className="text-xs font-semibold text-slate-900">3. AICTE Admin Workspace</div>
-              <p className="text-xs text-slate-600 mt-1">
-                Assign evaluators using expertise &amp; live workload scoring, manage evaluator verification, and record binding final decisions.
+              <Shield className="text-blue-800 mb-2" size={22} />
+              <div className="text-base font-semibold text-slate-900">AICTE Admin workspace</div>
+              <p className="text-base text-slate-600 mt-1">
+                Govern evaluator assignment and binding final decisions.
               </p>
             </div>
           </div>
@@ -3876,7 +3923,7 @@ export default function App() {
       </div>
 
       {/* Right Column: Sign-In & Public Institution Registration Form */}
-      <div className="lg:col-span-5 bg-white rounded-lg border border-slate-200 p-6 shadow-sm space-y-5">
+      <div className="lg:col-span-5 bg-white rounded-lg border border-slate-200 p-6 shadow-sm space-y-5 auth-form-card">
         <div className="flex items-center justify-between border-b border-slate-100 pb-3">
           <div>
             <h3 className="text-base font-semibold text-slate-900">
@@ -3890,7 +3937,28 @@ export default function App() {
                 : 'Public registration is restricted strictly to applying technical institutions.'}
             </p>
           </div>
-          <KeyRound className="w-5 h-5 text-slate-700 shrink-0" />
+          <div className="auth-role-control">
+            <span>Sign in as:</span>
+            <div className="role-switcher" role="tablist" aria-label="Sign in as">
+              {Object.entries(loginPersonaConfig).map(([role, config]) => (
+                <button
+                  key={role}
+                  type="button"
+                  role="tab"
+                  aria-selected={loginPersona === role}
+                  className={loginPersona === role ? 'role-option active' : 'role-option'}
+                  onClick={() => {
+                    setLoginPersona(role);
+                    setAuthMode('login');
+                    setAuthError(null);
+                    setAuthNotice(null);
+                  }}
+                >
+                  {config.shortLabel}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
 
         <div className="flex gap-2 bg-slate-100 p-1 rounded-md">
@@ -3906,18 +3974,24 @@ export default function App() {
           >
             Sign In
           </button>
-          <button
-            type="button"
-            onClick={() => {
-              setAuthMode('register');
-              setAuthError(null);
-            }}
-            className={`flex-1 py-1.5 text-xs font-medium rounded ${
-              authMode === 'register' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600'
-            }`}
-          >
-            Institution Registration
-          </button>
+          {loginPersona === 'College' ? (
+            <button
+              type="button"
+              onClick={() => {
+                setAuthMode('register');
+                setAuthError(null);
+              }}
+              className={`flex-1 py-1.5 text-xs font-medium rounded ${
+                authMode === 'register' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600'
+              }`}
+            >
+              Institution Registration
+            </button>
+          ) : (
+            <div className="flex-1 py-1.5 text-center text-xs text-slate-500">
+              Directorate onboarding only
+            </div>
+          )}
         </div>
 
         {authNotice && (
@@ -4136,7 +4210,9 @@ export default function App() {
             </button>
           </form>
         )}
+        <p className="auth-trust-line"><Lock size={15} /> Secure access <span>•</span> Role-based <span>•</span> Audit trail maintained</p>
       </div>
+    </div>
     </div>
   );
 
@@ -4485,27 +4561,105 @@ class DatabaseConnection {
   // ============================================================================
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col font-sans">
+    <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col font-sans portal-app">
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,600;6..72,700&display=swap');
+        .portal-app { --ink:#172033; --muted:#475569; --paper:#f8fafc; font-family:Inter,system-ui,sans-serif; background:#fff!important; font-size:16px; }
+        .portal-app h1,.portal-app h2,.portal-app h3 { font-family:Newsreader,Georgia,serif; letter-spacing:-.02em; }
+        .portal-app .font-mono,.portal-app code,.portal-app .mono { font-family:'DM Mono',ui-monospace,monospace; }
+        .portal-app > header { background:#fff!important; color:var(--ink)!important; border-bottom:1px solid #e2e8f0!important; box-shadow:0 1px 3px rgba(15,23,42,.04); }
+        .portal-app > header h1,.portal-app > header .text-white { color:var(--ink)!important; }
+        .portal-app > header .text-slate-400,.portal-app > header .text-slate-300 { color:#64748b!important; }
+        .portal-app > header .bg-slate-800,.portal-app > header .bg-slate-900 { background:#f1f5f9!important; color:var(--ink)!important; border-color:#e2e8f0!important; }
+        .portal-app > header .bg-blue-800 { background:#1e3a8a!important; color:#fff!important; }
+        .auth-shell { max-width:1200px; margin:0 auto; padding:24px 0 8px; width:100%; transition:all .5s ease-out; }
+        .auth-shell .auth-rolebar,.auth-shell > .auth-hero { display:none; }
+        .auth-legacy-content { grid-template-columns:minmax(0,55fr) minmax(0,45fr)!important; gap:32px!important; }
+        .auth-legacy-content > .lg\\:col-span-7 { grid-column:span 7 / span 7; }
+        .auth-legacy-content > .lg\\:col-span-5 { grid-column:span 5 / span 5; }
+        .auth-hero-briefing { min-height:0; padding:0 0 8px 54px; }
+        .auth-hero-briefing:before { display:none; }
+        .auth-hero-briefing h2 { font-size:clamp(34px,4vw,48px); max-width:560px; line-height:1.04; }
+        .auth-hero-briefing p { font-size:16px; max-width:600px; }
+        .auth-hero-briefing .briefing-list { font-size:14px; }
+        .how-it-works-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; margin-top:20px; }
+        .how-it-works-grid > div { min-height:154px; }
+        .test-accounts-section { margin-top:28px; box-shadow:none!important; }
+        .auth-form-card { align-self:start; margin-top:0; box-shadow:0 10px 28px rgba(15,23,42,.09)!important; }
+        .auth-form-card h3 { font-family:Inter,system-ui,sans-serif; font-size:20px; }
+        .auth-form-card label { font-size:14px!important; }
+        .auth-form-card input,.auth-form-card textarea,.auth-form-card select { font-size:16px!important; }
+        .auth-form-card input::placeholder { color:#6b7280; opacity:1; }
+        .auth-form-card input:focus,.auth-form-card textarea:focus,.auth-form-card select:focus { border-color:#1e3a8a!important; box-shadow:0 0 0 3px rgba(30,58,138,.16); }
+        .auth-form-card form > button { background:#f59e0b!important; color:#172033!important; font-size:15px!important; font-weight:700!important; }
+        .auth-form-card form > button:hover { background:#d97706!important; color:#fff!important; }
+        .auth-role-control { display:flex; flex-direction:column; gap:8px; align-items:flex-end; }
+        .auth-role-control > span { color:#475569; font-size:14px; font-weight:600; }
+        .auth-role-control .role-switcher { box-shadow:none; padding:3px; border-radius:10px; }
+        .auth-role-control .role-option { font-size:12px; padding:8px 9px; }
+        .aicte-logo { display:flex; align-items:center; justify-content:center; width:34px; height:34px; flex:none; color:#fff; background:#1e3a8a; border-radius:9px; }
+        .project-info-menu { position:relative; font-size:12px; color:#475569; }
+        .project-info-menu summary { cursor:pointer; list-style:none; padding:7px 9px; border:1px solid #e2e8f0; border-radius:8px; }
+        .project-info-menu summary::-webkit-details-marker { display:none; }
+        .project-info-popover { position:absolute; right:0; top:40px; z-index:40; width:180px; padding:8px; display:grid; gap:4px; background:#fff; border:1px solid #e2e8f0; border-radius:10px; box-shadow:0 8px 20px rgba(15,23,42,.12); }
+        .project-info-popover button,.project-info-popover span { padding:8px; text-align:left; color:#334155; background:transparent; border:0; }
+        .project-info-popover button:hover { background:#f1f5f9; border-radius:6px; }
+        .portal-footer-meta { display:flex; flex-wrap:wrap; align-items:center; gap:12px; color:#475569; font-size:13px; }
+        .portal-footer-meta strong { color:#172033; }
+        .portal-footer-meta a { color:#1e3a8a; font-weight:600; }
+        .auth-trust-line { display:flex; align-items:center; justify-content:center; gap:7px; color:#475569; font-size:13px; margin:4px 0 0; }
+        .auth-trust-line svg { color:#1e3a8a; }
+        .auth-rolebar { display:flex; align-items:center; justify-content:space-between; gap:18px; margin-bottom:18px; }
+        .eyebrow { display:block; color:#64748b; font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+        .rolebar-note { display:block; color:#94a3b8; font-size:12px; margin-top:4px; }
+        .role-switcher { display:flex; gap:4px; padding:4px; border:1px solid #e2e8f0; border-radius:14px; background:#fff; box-shadow:0 1px 3px rgba(15,23,42,.04); }
+        .role-option { display:flex; align-items:center; gap:7px; border:0; border-radius:10px; padding:9px 12px; background:transparent; color:#64748b; font-size:12px; font-weight:600; cursor:pointer; transition:all .3s ease; }
+        .role-option.active { background:var(--persona-surface); color:var(--persona-accent); box-shadow:0 1px 2px rgba(15,23,42,.06); }
+        .auth-hero { display:grid; grid-template-columns:minmax(0,1.3fr) minmax(250px,.7fr); gap:20px; padding:30px; border:1px solid #e2e8f0; border-radius:18px; background:linear-gradient(120deg,var(--persona-surface),#fff); box-shadow:0 8px 30px rgba(15,23,42,.05); margin-bottom:24px; overflow:hidden; }
+        .auth-briefing { position:relative; min-height:170px; padding-left:74px; }
+        .auth-briefing:before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; border-radius:3px; background:var(--persona-accent); }
+        .crest { position:absolute; left:23px; top:0; width:38px; height:38px; display:grid; place-items:center; color:var(--persona-accent); border:1px solid currentColor; border-radius:12px; background:#fff; }
+        .auth-briefing h2 { margin:8px 0 8px; max-width:620px; color:var(--ink); font-size:clamp(29px,4vw,47px); line-height:.98; }
+        .auth-briefing p { max-width:620px; color:#334155; font-size:16px; line-height:1.6; margin:0; }
+        .briefing-list { display:flex; flex-wrap:wrap; gap:8px 18px; margin-top:22px; color:var(--persona-accent); font-size:12px; font-weight:600; }
+        .briefing-list span { display:flex; align-items:center; gap:6px; }
+        .briefing-code { margin-top:24px; color:#94a3b8; font:11px 'DM Mono',monospace; letter-spacing:.04em; }
+        .auth-form-context { display:flex; flex-direction:column; justify-content:center; border-left:1px solid #e2e8f0; padding-left:24px; color:#334155; }
+        .auth-form-kicker { color:var(--persona-accent); font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; }
+        .status-pulse { display:inline-block; width:7px; height:7px; margin-right:7px; border-radius:50%; background:#10b981; box-shadow:0 0 0 4px rgba(16,185,129,.12); }
+        .auth-persona-line { display:flex; justify-content:space-between; gap:10px; margin-top:14px; font-family:Newsreader,serif; font-size:24px; }
+        .auth-policy { display:flex; gap:8px; align-items:flex-start; margin-top:18px; padding:12px; border-radius:10px; background:#fff; color:#64748b; font-size:12px; line-height:1.5; }
+        .auth-legacy-content > div { border-radius:14px!important; box-shadow:0 1px 3px rgba(15,23,42,.04)!important; }
+        .portal-app .bg-white { background:#fff; }
+        .portal-app button { transition:all .2s ease; }
+        @media (max-width:760px) {
+          .auth-shell { padding:16px 0; }
+          .auth-rolebar,.auth-hero { display:block; }
+          .role-switcher { margin-top:12px; overflow:auto; }
+          .role-option { white-space:nowrap; }
+          .auth-hero { padding:22px; }
+          .auth-briefing { padding-left:52px; }
+          .auth-briefing h2 { font-size:34px; }
+          .auth-form-context { border-left:0; border-top:1px solid #e2e8f0; padding:20px 0 0; margin-top:24px; }
+          .auth-legacy-content { display:block!important; }
+          .auth-legacy-content > div { width:100%; }
+          .how-it-works-grid { grid-template-columns:1fr; }
+          .auth-role-control { align-items:flex-start; margin-top:12px; }
+        }
+      `}</style>
       {/* Standardized Institutional Top Header */}
       <header className="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-3">
           {/* Brand Identity */}
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-md bg-blue-800 border border-blue-700 flex items-center justify-center font-semibold text-xs tracking-wider shrink-0">
-              AICTE
-            </div>
+            <div className="aicte-logo"><Shield size={17} /></div>
             <div>
               <div className="flex flex-wrap items-center gap-2">
                 <h1 className="text-sm sm:text-base font-semibold tracking-tight text-white">
-                  AI-Supported AICTE Approval Process Portal
+                  AICTE Portal
                 </h1>
-                <span className="hidden md:inline-block px-2 py-0.5 text-[11px] font-mono bg-slate-800 text-slate-300 rounded border border-slate-700">
-                  IEEE 830 SRS v1.0
-                </span>
               </div>
-              <p className="text-[11px] text-slate-400">
-                SVIIT, SVVV Indore (BTCS706N) &bull; Guide: Prof. Namrata Bhatt
-              </p>
+              <p className="text-[11px] text-slate-400">AI-Supported Approval Process</p>
             </div>
           </div>
 
@@ -4592,31 +4746,27 @@ class DatabaseConnection {
                   }`}
                 >
                   <Lock className="w-3.5 h-3.5" />
-                  <span>Sign In / Register</span>
+                  <span>Sign In</span>
                 </button>
                 <button
                   type="button"
-                  onClick={() => setActiveView('Architecture')}
-                  className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors flex items-center gap-1.5 ${
-                    activeView === 'Architecture'
-                      ? 'bg-blue-800 text-white'
-                      : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
-                  }`}
+                  onClick={() => {
+                    setActiveView('AuthScreen');
+                    setAuthMode('register');
+                    setLoginPersona('College');
+                  }}
+                  className="px-3 py-1.5 rounded-md text-xs font-medium bg-amber-500 text-white hover:bg-amber-600 transition-colors"
                 >
-                  <GitBranch className="w-3.5 h-3.5" />
-                  <span>UML Reference</span>
+                  <span>Register</span>
                 </button>
-                <button
-                  type="button"
-                  onClick={() => setShowDemoSwitcher((prev) => !prev)}
-                  className={`px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors border ${
-                    showDemoSwitcher
-                      ? 'bg-slate-700 text-white border-slate-500'
-                      : 'bg-slate-900 text-slate-400 border-slate-700 hover:text-slate-200'
-                  }`}
-                >
-                  Demo Helper
-                </button>
+                <details className="project-info-menu">
+                  <summary>Project Info</summary>
+                  <div className="project-info-popover">
+                    <button type="button" onClick={() => setActiveView('Architecture')}>UML Reference</button>
+                    <button type="button" onClick={() => setShowDemoSwitcher((prev) => !prev)}>Demo Helper</button>
+                    <span className="font-mono">IEEE 830 SRS v1.0</span>
+                  </div>
+                </details>
               </>
             )}
           </nav>
@@ -4746,6 +4896,12 @@ class DatabaseConnection {
       {/* Subtle, Non-Intrusive Audit & Traceability Footer Bar (Section 3.I) */}
       <footer className="bg-slate-50 border-t border-slate-200 py-2.5 px-4 sm:px-6 lg:px-8 text-xs text-slate-600 mt-auto">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div className="portal-footer-meta">
+            <strong>AI-Supported AICTE Approval Process Portal</strong>
+            <span>SVVV Indore</span>
+            <span>Guide: Prof. Namrata Bhatt</span>
+            <a href="mailto:approval-support@aicte-portal.local">Help / Contact</a>
+          </div>
           <div className="flex flex-wrap items-center gap-2 min-w-0">
             <span className="px-2 py-0.5 rounded bg-slate-200 text-slate-700 font-mono text-[10px] font-medium shrink-0">
               AUDIT TRAIL
